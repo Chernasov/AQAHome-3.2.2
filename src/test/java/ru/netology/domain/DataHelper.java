@@ -58,5 +58,20 @@ public class DataHelper {
         private int amount;
     }
 
+    @Value
+    public static class Pathes {
+        private String path;
+    }
 
+    public static Pathes getPathAuth() {
+        return new Pathes("/api/auth");
+    }
+
+    public static Pathes getPathVerification() {
+        return new Pathes("/api/auth/verification");
+    }
+
+    public static Pathes getPathTransfer() {
+        return new Pathes("/api/transfer");
+    }
 }

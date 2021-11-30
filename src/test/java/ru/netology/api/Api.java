@@ -7,12 +7,13 @@ import ru.netology.domain.DataHelper;
 import static io.restassured.RestAssured.given;
 
 public class Api {
-    public Response sendPost(Object info, String path) {
+    public Response sendPost(Object info, String path, String headerValue) {
         Response response =
                 given()
                         .baseUri("http://localhost")
                         .port(9999)
                         .contentType(ContentType.JSON)
+                        .header("Authorization", headerValue)
                         .body(info)
                         .when()
                         .post(path)
@@ -24,7 +25,7 @@ public class Api {
     }
 
     public String getToken(DataHelper.VerificationCode verificationCode, String path) {
-        return sendPost(verificationCode, path).path("token");
+        return sendPost(verificationCode, path,"").path("token");
     }
 
     private Response getCardInfo(String token) {
@@ -51,17 +52,8 @@ public class Api {
         return getCardInfo(token).path("[0].balance");
     }
 
-    public void transfer(String token, DataHelper.TransferInfo info) {
-
-        given()
-                .baseUri("http://localhost")
-                .port(9999)
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + token)
-                .body(info)
-                .when()
-                .post("/api/transfer")
-                .then()
-                .statusCode(200);
+    public void transfer(String token, DataHelper.TransferInfo info, String path) {
+        String headerValue = "Bearer " + token;
+        sendPost(info, path, headerValue);
     }
 }
