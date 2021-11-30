@@ -1,8 +1,8 @@
 package ru.netology;
 
 import org.junit.jupiter.api.Test;
+import ru.netology.api.Api;
 import ru.netology.domain.DataHelper;
-import ru.netology.page.LoginPage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,18 +10,18 @@ public class TransferTestApi {
 
     @Test
     void shouldTransferFromSecondToFirst() {
-        var loginPage = new LoginPage();
+        var sendApi = new Api();
         var validUser = DataHelper.getAuthInfo();
-        var verificationPage = loginPage.validLogin(validUser);
+        sendApi.sendPost(validUser, "/api/auth");
         var verificationCode = DataHelper.getVerificationCodeFor();
-        var transferPage = verificationPage.validVerify(verificationCode);
-        var balanceCardFirstBefore = transferPage.getFirstCardBalance(transferPage);
-        var balanceCardSecondBefore = transferPage.getSecondCardBalance(transferPage);
+        String token = sendApi.getToken(verificationCode, "/api/auth/verification");
+        var balanceCardFirstBefore = sendApi.getFirstCardBalance(token);
+        var balanceCardSecondBefore = sendApi.getSecondCardBalance(token);
         var amount = 5000;
         var transfer = new DataHelper.TransferInfo("5559 0000 0000 0002", "5559 0000 0000 0001", amount);
-        transferPage.transfer(transferPage, transfer);
-        var balanceCardFirstAfter = transferPage.getFirstCardBalance(transferPage);
-        var balanceCardSecondAfter = transferPage.getSecondCardBalance(transferPage);
+        sendApi.transfer(token, transfer);
+        var balanceCardFirstAfter = sendApi.getFirstCardBalance(token);
+        var balanceCardSecondAfter = sendApi.getSecondCardBalance(token);
         assertEquals(balanceCardFirstBefore + amount, balanceCardFirstAfter);
         assertEquals(balanceCardSecondBefore - amount, balanceCardSecondAfter);
     }

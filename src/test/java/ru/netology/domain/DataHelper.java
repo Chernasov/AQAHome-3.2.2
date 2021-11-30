@@ -1,9 +1,5 @@
 package ru.netology.domain;
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -12,10 +8,9 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.DriverManager;
 
-import static io.restassured.RestAssured.given;
-
 public class DataHelper {
-    private DataHelper() {}
+    private DataHelper() {
+    }
 
     @Value
     public static class AuthInfo {
@@ -41,7 +36,7 @@ public class DataHelper {
         try (
                 var conn = DriverManager.getConnection(
                         "jdbc:mysql://localhost:3306/app_db", "user", "password"
-                );
+                )
         ) {
             code = runner.query(conn, codesSQL, new ScalarHandler<>());
         }
